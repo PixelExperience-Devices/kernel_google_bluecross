@@ -64,6 +64,8 @@
 /* The max erase timeout, used when host->max_busy_timeout isn't specified */
 #define MMC_ERASE_TIMEOUT_MS	(60 * 1000) /* 60 s */
 
+#define MMC_CACHE_FLUSH_TIMEOUT_MS     (30 * 1000) /* 30s */
+
 static const unsigned freqs[] = { 400000, 300000, 200000, 100000 };
 
 /*
@@ -4709,7 +4711,8 @@ int mmc_cache_barrier(struct mmc_card *card)
 	 * flush timeout instead a generic CMD6 timeout
 	 */
 	err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
-			EXT_CSD_FLUSH_CACHE, 0x2, 0);
+			EXT_CSD_FLUSH_CACHE, 0x2,
+			MMC_CACHE_FLUSH_TIMEOUT_MS);
 	if (err)
 		pr_err("%s: cache barrier error %d\n",
 				mmc_hostname(host), err);
